@@ -7,10 +7,8 @@ const VerifyToken = (req,res,next)=>{
     //token=req.header('auth-token')
     if (typeof token!=='undefined') {
         jwt.verify(token,process.env.TOKEN_KEY,(err,user)=>{
-            console.log(process.env.TOKEN_KEY)
-            if(err) return res.status(403).send("Access denied")
+            if(err || req.user.role!='client') return res.status(403).send("Access denied")
             req.user=user
-            console.log(req.user.username)
             next()
         })
         

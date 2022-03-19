@@ -1,11 +1,8 @@
 const express = require("express")
 var mysql = require('mysql');
-const auth = require('./routes/clientauth')
+const auth = require('./routes/auth/employeeauth')
 require('dotenv').config()
 path = require("path")
-
-const login = require('./routes/login')
-const register = require('./routes/register')
 
 
 const PORT = process.env.PORT || 3000;
@@ -33,8 +30,15 @@ app.use(express.static('public'));
 app.set('view-engine', 'ejs');
 app.engine('ejs', require('ejs').__express);
 
-app.use('/',login);
-app.use('/',register);
+app.get('/',(req,res)=>{
+    res.render('index.ejs')
+})
+
+app.use('/',require('./routes/login'));
+app.use('/',require('./routes/client_register'));
+app.use('/',require('./routes/employee_register'));
+app.use('/',require('./routes/client'));
+app.use('/',require('./routes/employee'));
 
 app.listen(PORT,(err)=>{
     if(err) throw err;

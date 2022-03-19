@@ -14,11 +14,11 @@ var db = mysql.createConnection({
 	database : 'diet1'
 });
 
-router.get("/register",(req,res)=>{
-    res.render("register.ejs")
+router.get("/emp_register",(req,res)=>{
+    res.render("employee_register.ejs")
 })
 
-router.post('/register', [
+router.post('/emp_register', [
     check('password')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/ ,)
   ] ,(req,res)=>{
@@ -27,6 +27,7 @@ router.post('/register', [
     var username = req.body.username;
     var password = req.body.password;
     var repass = req.body.rep_password;
+	role = 'employee' //static
     const errors = validationResult(req)    
 
     if(errors.isEmpty() && repass==password) {
@@ -36,14 +37,14 @@ router.post('/register', [
             }
         
             else {
-            var sql="INSERT INTO users (username, password,email, role) VALUES (?,?,?,?)";
+            var sql1="INSERT INTO users (username, pass,email, user_type) VALUES (?,?,?,?)";
             bcrypt.hash(password,10,(err, hash)=> {
-                db.query(sql,[username,hash,email,'client'],function(error, results){
-                    if(error) {
-                        throw error;  
-                    }
-                    console.log("1 record inserted");
-                    res.redirect('/login');
+                db.query(sql1,[username,hash,email,role],function(error, results){
+                    if(error) throw error;  
+					
+						console.log("1 record inserted");
+                    	res.redirect('/login');
+                
                     })
             });
             }

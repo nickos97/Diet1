@@ -22,20 +22,31 @@ router.post('/login',(req,res)=>{
 
     var username=req.body.username;
     var password=req.body.password;
-
+    console.log(username)
     var sql = 'SELECT * FROM users WHERE username=?'
 
     db.query(sql,[username],function(err,user){
 
         if(err) throw err;
-
+    
         if(user){
-            bcrypt.compare(password,user[0].password,(err,response)=>{
+            bcrypt.compare(password,user[0].pass,(err,response)=>{
                 if(response){
-                    const user_data = {user_id:user[0].user_id,username: username,role:user[0].role}
-                    const Token=jwt.sign(user_data,process.env.TOKEN_KEY)
-                    res.header('auth-token',Token).send(`Successful login here is your token: ${Token}`)
+                    const user_data = {user_id:user[0].user_id,username: username,user_type:user[0].user_type}
+                    const token=jwt.sign(user_data,process.env.TOKEN_KEY)
+                    
+                    if(user_data.user_type=='client'){
+                        console.log("in")
+                        //res.redirect('/client')
+                        res.render('client.ejs',{token: token})
+                    }
+                    else if (user_data.user_type=='employee')
+                   
+                        //res.redirect('/employee')
+                        res.render('employee.ejs',{token:token})
+                    //res.header('auth-token',token).send(`Successful login here is your token: ${token}`)
                 }
+                else res.send("wrong password")
             })
         }
     })
