@@ -3,6 +3,7 @@ var mysql = require('mysql');
 const auth = require('./routes/auth/employeeauth')
 require('dotenv').config()
 path = require("path")
+var cookieParser = require('cookie-parser')
 
 
 const PORT = process.env.PORT || 3000;
@@ -24,6 +25,7 @@ db.connect(function(err) {
 });
 
 app = express()
+app.use(cookieParser())
 app.use(express.urlencoded({extended: true }))
 app.use(express.json())
 app.use(express.static('public'));

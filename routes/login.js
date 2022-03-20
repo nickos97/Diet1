@@ -6,6 +6,7 @@ const mysql = require('mysql')
 var bcrypt = require('bcrypt');
 require('dotenv').config()
 
+
 var db = mysql.createConnection({
 	host     : 'localhost',
 	user     : 'root',
@@ -36,14 +37,15 @@ router.post('/login',(req,res)=>{
                     const token=jwt.sign(user_data,process.env.TOKEN_KEY)
                     
                     if(user_data.user_type=='client'){
-                        console.log("in")
-                        //res.redirect('/client')
-                        res.render('client.ejs',{token: token})
+                        
+                        res.redirect(`/client?token=${token}`);
+                        //res.cookie('jwtToken', token, { maxAge: 1000, httpOnly: true }).redirect('/client')
                     }
                     else if (user_data.user_type=='employee')
                    
-                        //res.redirect('/employee')
-                        res.render('employee.ejs',{token:token})
+                        res.redirect(`/employee?token=${token}`)
+                        //res.cookie('jwtToken', token, { maxAge: 1000, httpOnly: true }).redirect('/employee')
+                        
                     //res.header('auth-token',token).send(`Successful login here is your token: ${token}`)
                 }
                 else res.send("wrong password")

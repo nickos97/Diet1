@@ -5,8 +5,11 @@ const jwt = require("jsonwebtoken")
 const mysql = require('mysql')
 var bcrypt = require('bcrypt');
 require('dotenv').config()
+const employeeauth = require('./auth/employeeauth')
 
-router.get('/employee',(req,res)=>{
+
+router.get('/employee',employeeauth,(req,res)=>{
+    if(req.user.user_type!='employee') res.send("access denied")
     res.render("employee.ejs")
 })
 
